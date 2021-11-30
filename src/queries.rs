@@ -1,8 +1,7 @@
 use cqrs_es::{EventEnvelope, Query, QueryProcessor};
 use serde::{Deserialize, Serialize};
 
-use crate::aggregate::LenderGroup;
-use crate::aggregate::Lender;
+use crate::aggregate::{LenderGroup, Lender};
 use crate::events::LenderGroupEvent;
 
 pub struct SimpleLoggingQueryProcessor {}
@@ -18,29 +17,23 @@ impl QueryProcessor<LenderGroup> for SimpleLoggingQueryProcessor {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LenderGroupQuery {
-    id: Option<String>,
-    name: Option<String>,
+    lender_group_id: Option<String>,
+    lender_group_name: Option<String>,
     lenders: Vec<Lender>,
 }
 
 impl Query<LenderGroup> for LenderGroupQuery {
     fn update(&mut self, event: &EventEnvelope<LenderGroup>) {
         match &event.payload {
+            LenderGroupEvent::LenderGroupAdded(payload) => {
+                self.lender_group_id = Option::from(payload.lender_group_id.clone());
+                self.lender_group_name = Option::from(payload.lender_group_name.clone());
+            }
             LenderGroupEvent::LenderAdded(payload) => {
-                let lender_added = Lender {
-                    id: payload.id.clone(),
-                    name: payload.name.clone(),
-                    lender_group_id: payload.lender_group_id.clone()
-                };
-                self.lenders.push(lender_added);
+                self.lenders.push(payload.lender.clone());
             }
             LenderGroupEvent::LenderRemoved(payload) => {
-                let lender_removed = Lender {
-                    id: payload.id.clone(),
-                    name: payload.name.clone(),
-                    lender_group_id: payload.lender_group_id.clone()
-                };
-                let index = self.lenders.iter().position(|r| r == &lender_removed).unwrap();
+                let index = self.lenders.iter().position(|r| r == &payload.lender.clone()).unwrap();
                 self.lenders.remove(index);
             }
         }
@@ -50,8 +43,8 @@ impl Query<LenderGroup> for LenderGroupQuery {
 impl Default for LenderGroupQuery {
     fn default() -> Self {
         LenderGroupQuery {
-            id: None,
-            name: None,
+            lender_group_id: None,
+            lender_group_name: None,
             lenders: Default::default(),
         }
     }

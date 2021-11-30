@@ -4,7 +4,7 @@ mod simple_application_tests {
     use cqrs_es::mem_store::MemStore;
 
     use crate::aggregate::{LenderGroup, Lender};
-    use crate::commands::LenderGroupCommand;
+    use crate::commands::{LenderGroupCommand, AddLender, RemoveLender, AddLenderGroup};
     use crate::queries::SimpleLoggingQueryProcessor;
 
     #[test]
@@ -15,12 +15,14 @@ mod simple_application_tests {
 
         let aggregate_id = "aggregate-instance-1";
 
-        cqrs.execute(aggregate_id, LenderGroupCommand::AddLender(Lender { id: 1.to_string(), name: "ABC Bank".to_string(), lender_group_id: 1.to_string()})).unwrap();
+        cqrs.execute(aggregate_id, LenderGroupCommand::AddLenderGroup(AddLenderGroup { lender_group_id: 1.to_string(), lender_group_name: "Banks".to_string() })).unwrap();
 
-        cqrs.execute(aggregate_id, LenderGroupCommand::AddLender(Lender { id: 2.to_string(), name: "XYZ Credit Union".to_string(), lender_group_id: 1.to_string()})).unwrap();
+        cqrs.execute(aggregate_id, LenderGroupCommand::AddLender(AddLender { lender: Lender { id: 1.to_string(), name: "ABC Bank".to_string() }})).unwrap();
 
-        cqrs.execute(aggregate_id, LenderGroupCommand::RemoveLender(Lender { id: 2.to_string(), name: "XYZ Credit Union".to_string(), lender_group_id: 1.to_string()})).unwrap();
+        cqrs.execute(aggregate_id, LenderGroupCommand::AddLender(AddLender { lender: Lender { id: 2.to_string(), name: "XYZ Bank".to_string() }})).unwrap();
 
-        cqrs.execute(aggregate_id, LenderGroupCommand::AddLender(Lender { id: 2.to_string(), name: "XYZ Credit Union".to_string(), lender_group_id: 1.to_string()})).unwrap();
+        cqrs.execute(aggregate_id, LenderGroupCommand::RemoveLender(RemoveLender { lender: Lender { id: 2.to_string(), name: "XYZ Bank".to_string() }})).unwrap();
+
+        cqrs.execute(aggregate_id, LenderGroupCommand::AddLender(AddLender { lender: Lender { id: 2.to_string(), name: "XYZ Bank".to_string() }})).unwrap();
     }
 }
