@@ -3,9 +3,9 @@ mod simple_application_tests {
     use cqrs_es::CqrsFramework;
     use cqrs_es::mem_store::MemStore;
 
-    use crate::aggregate::{LenderGroup, Lender};
-    use crate::commands::{LenderGroupCommand, AddLender, RemoveLender, AddLenderGroup};
-    use crate::queries::SimpleLoggingQueryProcessor;
+    use rust_loan_marketplace_builder::aggregate::{LenderGroup, Lender};
+    use rust_loan_marketplace_builder::commands::{LenderGroupCommand, AddLender, RemoveLender, AddLenderGroup};
+    use rust_loan_marketplace_builder::queries::SimpleLoggingQueryProcessor;
 
     #[test]
     fn test_event_store_single_command() {

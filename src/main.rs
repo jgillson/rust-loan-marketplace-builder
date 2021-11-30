@@ -13,7 +13,6 @@ use crate::aggregate::LenderGroup;
 use crate::queries::{LenderGroupQuery, SimpleLoggingQueryProcessor};
 
 mod aggregate;
-mod application;
 mod commands;
 mod events;
 mod queries;
