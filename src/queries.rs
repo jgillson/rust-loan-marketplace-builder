@@ -6,6 +6,8 @@ use crate::events::LenderGroupEvent;
 
 pub struct SimpleLoggingQueryProcessor {}
 
+// Each CQRS platform should have one or more QueryProcessors where it will distribute committed events
+// It is the responsibility of the QueryProcessor to update any interested queries
 impl QueryProcessor<LenderGroup> for SimpleLoggingQueryProcessor {
     fn dispatch(&self, aggregate_id: &str, events: &[EventEnvelope<LenderGroup>]) {
         for event in events {
@@ -15,6 +17,7 @@ impl QueryProcessor<LenderGroup> for SimpleLoggingQueryProcessor {
     }
 }
 
+// LenderGroupQuery struct to represent query payload
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LenderGroupQuery {
     lender_group_id: Option<String>,
@@ -22,6 +25,10 @@ pub struct LenderGroupQuery {
     lenders: Vec<Lender>,
 }
 
+// A Query is a read element in a CQRS system
+// As events are emitted multiple downstream queries are updated to reflect the current state of the system
+// A query may also be referred to as a 'view', the concepts are identical but 'query' is used here to conform with CQRS nomenclature
+// Queries are generally serialized for persistence, usually in a standard database, but a query could utilize messaging platform or other asynchronous, eventually-consistent systems
 impl Query<LenderGroup> for LenderGroupQuery {
     fn update(&mut self, event: &EventEnvelope<LenderGroup>) {
         match &event.payload {
@@ -40,6 +47,8 @@ impl Query<LenderGroup> for LenderGroupQuery {
     }
 }
 
+// Returns the "default value" for a type
+// Default values are often some kind of initial value, identity value, or anything else that may make sense as a default
 impl Default for LenderGroupQuery {
     fn default() -> Self {
         LenderGroupQuery {

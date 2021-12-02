@@ -1,0 +1,157 @@
+{
+	"info": {
+		"_postman_id": "cc454401-db75-4869-b142-c88d646a60f9",
+		"name": "rust-loan-marketplace-builder",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "query - LenderGroup",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3031/lender_group/{{lender_group_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3031",
+					"path": [
+						"lender_group",
+						"{{lender_group_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "command - AddLenderGroup",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"lender_group_id\", \"LGID-\" + (Math.random().toString(16)+\"000000000\").substr(2, 8))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"lender_group_id\": \"{{lender_group_id}}\",\n    \"lender_group_name\": \"Banks\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3031/lender_group/addLenderGroup/{{lender_group_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3031",
+					"path": [
+						"lender_group",
+						"addLenderGroup",
+						"{{lender_group_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "command - AddLender",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"lender_id\", \"LID-\" + (Math.random().toString(16)+\"000000000\").substr(2, 8))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"lender\": {\n        \"id\": \"LID-{{lender_group_id}}-2\",\n        \"name\": \"ZZZ Bank\" \n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3031/lender_group/addLender/{{lender_group_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3031",
+					"path": [
+						"lender_group",
+						"addLender",
+						"{{lender_group_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "command - RemoveCompany",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"lender\": {\n        \"id\": \"LID-LGID-ebcc9e4b-2\",\n        \"name\": \"ZZZ Bank\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3031/lender_group/removeLender/{{lender_group_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3031",
+					"path": [
+						"lender_group",
+						"removeLender",
+						"{{lender_group_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
